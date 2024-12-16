@@ -2,7 +2,7 @@
 import { LOGO_URL } from "../utility/content";
 import { Link } from "react-router-dom";
 const Header = () => (
-    <div className='header'>
+    <div className='flex justify-between pink'>
         <div className='logo'>
             <img src={LOGO_URL} alt='Logo' />
         </div>

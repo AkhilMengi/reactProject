@@ -1,4 +1,4 @@
-import ResturantCard from "./ResturantCard";
+import ResturantCard,{withPromoteLabel} from "./ResturantCard";
 import { useEffect, useState } from "react";
 import ShimmerCard from './Shimmer';
 import { Link } from "react-router-dom";
@@ -7,7 +7,9 @@ const Body = () => {
     const [ListOfResturant, setListOfResturant] = useState([]); // Original list
     const [filteredResturants, setFilteredResturants] = useState([]); // Filtered list
     const [searchText, setSearchText] = useState(""); // Search text
-    console.log(filteredResturants); // Log filtered restaurants to debug
+    console.log('Filtered'+ ListOfResturant); // Log filtered restaurants to debug
+
+    const PromotedResturant = withPromoteLabel(ResturantCard) 
 
     // Fetch data from API
     useEffect(() => {
@@ -17,9 +19,9 @@ const Body = () => {
     const fetchData = async () => {
         const data = await fetch("http://localhost:3200/restaurants");
         const json = await data.json();
-        console.log('API Response:', json); // Log the API response
-        setListOfResturant(json.restaurants);
-        setFilteredResturants(json.restaurants); // Initialize filtered list with all restaurants
+        console.log('API Response:', data); // Log the API response
+        setListOfResturant(json);
+        setFilteredResturants(json); // Initialize filtered list with all restaurants
     };
 
     if (ListOfResturant.length === 0) {
@@ -40,7 +42,7 @@ const Body = () => {
                         // Filter the restaurants by search text
                         const filteredBySearch = searchText.trim()
                             ? ListOfResturant.filter((res) =>
-                                  res.info.name.toLowerCase().includes(searchText.toLowerCase())
+                                  res.name.toLowerCase().includes(searchText.toLowerCase())
                               )
                             : ListOfResturant;
                         setFilteredResturants(filteredBySearch);
@@ -54,7 +56,7 @@ const Body = () => {
                         onClick={() => {
                             // Filter top-rated restaurants
                             const filteredTopRated = ListOfResturant.filter(
-                                (res) => res.info.avgRating > 4.3
+                                (res) => res.avgRating > 4.3
                             );
                             setFilteredResturants(filteredTopRated);
                         }}
@@ -67,8 +69,9 @@ const Body = () => {
             <div className="restro-container">
                 {filteredResturants.length > 0 ? (
                     filteredResturants.map((resturant) => (
-                        <Link key={resturant.info.id} to={`/resturants/${resturant.info.id}`}>
-  <ResturantCard resData={resturant} />
+                        <Link key={resturant.id} to={`/resturants/${resturant.id}`}>
+                            {resturant .promoted?<PromotedResturant resData={resturant} />:<ResturantCard resData={resturant} />}
+   
 </Link>
 
                     ))
@@ -79,5 +82,8 @@ const Body = () => {
         </div>
     );
 };
+
+
+
 
 export default Body;
